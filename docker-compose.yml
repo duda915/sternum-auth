@@ -1,0 +1,32 @@
+version: "3.5"
+
+services:
+  configservice:
+    container_name: config
+    image: mdud/sternum-config
+    ports:
+      - 8888:8888
+    volumes:
+      - ./sternumconfig:/root/config
+  cdnservice:
+    container_name: cdn
+    image: mdud/sternum-cdn
+    ports:
+      - 3000:3000
+    volumes:
+      - cdndata:/root/sternum-cdn/
+  accountdbservice:
+    container_name: accountdb
+    image: postgres:9.6
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=auth
+      - POSTGRES_PASSWORD=auth
+      - POSTGRES_DB=auth
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+volumes:
+  cdndata:
+  dbdata:
