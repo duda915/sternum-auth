@@ -26,6 +26,7 @@ Vagrant.configure("2") do |config|
   config.vm.network "forwarded_port", guest: 8080, host: 8080
   config.vm.network "forwarded_port", guest: 3000, host: 3000
   config.vm.network "forwarded_port", guest: 8888, host: 8888
+  config.vm.network "forwarded_port", guest: 5432, host: 5432
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine and only allow access
@@ -71,7 +72,7 @@ Vagrant.configure("2") do |config|
     usermod -aG docker vagrant
     curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     chmod +x /usr/local/bin/docker-compose
-    apt install -y postgresql-client-common postgresql-client-9.5 openjdk-8-jdk
+    apt install -y openjdk-8-jdk
     docker-compose -f /vagrant/docker-compose.yml up -d
   SHELL
 
