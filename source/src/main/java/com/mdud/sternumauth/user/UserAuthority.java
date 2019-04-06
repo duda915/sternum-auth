@@ -1,6 +1,5 @@
 package com.mdud.sternumauth.user;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import javax.persistence.*;

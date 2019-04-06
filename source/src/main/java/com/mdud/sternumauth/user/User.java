@@ -53,3 +53,4 @@ public class User {
         return PasswordEncoder.getEncoder().encode(password);
     }
 }
+
