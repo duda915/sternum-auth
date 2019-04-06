@@ -3,6 +3,7 @@ package com.mdud.sternumauth.user;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "service_user")
@@ -31,13 +32,17 @@ public class User {
     @Column(name = "active")
     private Boolean active;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private Set<UserAuthority> authoritySet;
 
-    public User(String username, String email, String password, String imageLink) {
+    public User(String username, String email, String password, String imageLink, Set<UserAuthority> authoritySet) {
         this.username = username;
         this.email = email;
         setPassword(password);
         this.imageLink = imageLink;
         this.active = false;
+        this.authoritySet = authoritySet;
     }
 
     public void setPassword(String password) {
