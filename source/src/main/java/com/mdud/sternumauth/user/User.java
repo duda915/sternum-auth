@@ -3,6 +3,8 @@ package com.mdud.sternumauth.user;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -57,6 +59,55 @@ public class User {
 
     private String encodePassword(String password) {
         return PasswordEncoder.getEncoder().encode(password);
+    }
+
+    public static class UserBuilder {
+        private String username;
+        private String email;
+        private String password;
+        private String imageLink;
+        private Set<UserAuthority> authorities;
+
+        public UserBuilder username(String username) {
+            this.username = username;
+            return this;
+        }
+
+        public UserBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public UserBuilder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public UserBuilder imageLink(String imageLink) {
+            this.imageLink = imageLink;
+            return this;
+        }
+
+        public UserBuilder authority(AuthorityType authorityType) {
+            this.authorities = new HashSet<>();
+            switch (authorityType) {
+                case ADMIN:
+                    Arrays.asList(AuthorityType.values()).forEach(aType -> authorities.add(new UserAuthority(aType)));
+                    break;
+                case MANAGER:
+                    authorities.add(new UserAuthority(AuthorityType.MANAGER));
+                    authorities.add(new UserAuthority(AuthorityType.USER));
+                    break;
+                case USER:
+                    authorities.add(new UserAuthority(AuthorityType.USER));
+            }
+
+            return this;
+        }
+
+        public User createUser() {
+            return new User(username, email, password, imageLink, authorities);
+        }
     }
 
 }
