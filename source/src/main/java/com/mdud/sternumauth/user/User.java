@@ -76,9 +76,11 @@ public class User {
         private String password;
         private String imageLink;
         private Set<UserAuthority> authorities;
+        private boolean active;
 
         public UserBuilder() {
             this.authorities = new HashSet<>();
+            this.active = false;
         }
 
         public UserBuilder username(String username) {
@@ -106,8 +108,15 @@ public class User {
             return this;
         }
 
+        public UserBuilder setActive(boolean active) {
+            this.active = active;
+            return this;
+        }
+
         public User createUser() {
-            return new User(username, email, password, imageLink, authorities);
+            User user = new User(username, email, password, imageLink, authorities);
+            user.setActive(active);
+            return user;
         }
     }
 
