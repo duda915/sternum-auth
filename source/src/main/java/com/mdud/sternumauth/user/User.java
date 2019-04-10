@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "service_user")
@@ -49,8 +50,14 @@ public class User {
         this.password = encodePassword(password);
     }
 
+    public UserDTO toDTO() {
+        return new UserDTO(this.username, this.password, this.email, this.imageLink,
+                authoritySet.stream().map(auth -> auth.getAuthorityType()).collect(Collectors.toSet()));
+    }
+
     private String encodePassword(String password) {
         return PasswordEncoder.getEncoder().encode(password);
     }
+
 }
 
