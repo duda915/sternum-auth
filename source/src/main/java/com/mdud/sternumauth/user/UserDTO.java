@@ -12,11 +12,8 @@ public class UserDTO {
     private String username;
 
     @JsonIgnore
-    private String password;
-
-    @JsonIgnore
     private String email;
     private String image;
 
-    private Set<AuthorityType> authoritySet;
+    private Set<AuthorityType> authorities;
 }

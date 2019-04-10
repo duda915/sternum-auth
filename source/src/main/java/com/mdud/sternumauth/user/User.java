@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,9 +54,17 @@ public class User {
     }
 
     public UserDTO toDTO() {
-        return new UserDTO(this.username, this.password, this.email, this.imageLink,
-                authoritySet.stream().map(auth -> auth.getAuthorityType()).collect(Collectors.toSet()));
+        return new UserDTO(this.username, this.email, this.imageLink,
+                authoritySet.stream().map(UserAuthority::getAuthorityType).collect(Collectors.toSet()));
     }
+
+    public static User fromCredentialUserDTO(CredentialUserDTO credentialUserDTO) {
+        return new User(credentialUserDTO.getUsername(), credentialUserDTO.getEmail(), credentialUserDTO.getPlainPassword(),
+                credentialUserDTO.getImage(),
+                credentialUserDTO.getAuthorities().stream().map(UserAuthority::new)
+                        .collect(Collectors.toSet()));
+    }
+
 
     private String encodePassword(String password) {
         return PasswordEncoder.getEncoder().encode(password);
@@ -67,6 +76,10 @@ public class User {
         private String password;
         private String imageLink;
         private Set<UserAuthority> authorities;
+
+        public UserBuilder() {
+            this.authorities = new HashSet<>();
+        }
 
         public UserBuilder username(String username) {
             this.username = username;
@@ -88,20 +101,8 @@ public class User {
             return this;
         }
 
-        public UserBuilder authority(AuthorityType authorityType) {
-            this.authorities = new HashSet<>();
-            switch (authorityType) {
-                case ADMIN:
-                    Arrays.asList(AuthorityType.values()).forEach(aType -> authorities.add(new UserAuthority(aType)));
-                    break;
-                case MANAGER:
-                    authorities.add(new UserAuthority(AuthorityType.MANAGER));
-                    authorities.add(new UserAuthority(AuthorityType.USER));
-                    break;
-                case USER:
-                    authorities.add(new UserAuthority(AuthorityType.USER));
-            }
-
+        public UserBuilder addAuthority(AuthorityType authorityType) {
+            this.authorities.add(new UserAuthority(authorityType));
             return this;
         }
 

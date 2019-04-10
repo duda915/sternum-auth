@@ -4,8 +4,8 @@ import java.util.Optional;
 
 public interface UserService {
     UserDTO getUserByUsername(String username);
-    UserDTO addUser(UserDTO userDTO);
-    UserDTO changeUserPassword(UserDTO userDTO);
-    UserDTO changeUserImage(UserDTO userDTO);
-    UserDTO activateUser(UserDTO userDTO);
+    UserDTO addUser(CredentialUserDTO credentialUserDTO);
+    UserDTO changeUserPassword(String username, String newPassword);
+    UserDTO changeUserImage(String username, String image);
+    UserDTO activateUser(String username);
 }
