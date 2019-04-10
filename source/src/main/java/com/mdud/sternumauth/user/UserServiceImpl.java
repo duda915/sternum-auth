@@ -39,17 +39,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDTO changeUserPassword(String username, String newPassword) {
-        return null;
+        User user = userRepository.findDistinctByUsername(username).orElseThrow(UserNotFoundException::new);
+        user.setPassword(newPassword);
+
+        return userRepository.save(user).toDTO();
     }
 
     @Override
     public UserDTO changeUserImage(String username, String image) {
-        return null;
+        User user = userRepository.findDistinctByUsername(username).orElseThrow(UserNotFoundException::new);
+        user.setImageLink(image);
+
+        return userRepository.save(user).toDTO();
     }
 
     @Override
     public UserDTO activateUser(String username) {
-        return null;
+        User user = userRepository.findDistinctByUsername(username).orElseThrow(UserNotFoundException::new);
+        user.setActive(true);
+
+        return userRepository.save(user).toDTO();
     }
 
 }

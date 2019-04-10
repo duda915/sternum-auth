@@ -47,7 +47,7 @@ public class UserServiceImplTest {
         UserDTO getUser = userService.getUserByUsername(mockUser.getUsername());
 
         verify(userRepository, times(1)).findDistinctByUsername(mockUser.getUsername());
-        assertEquals(mockUser.toDTO(), getUser);
+        assertEquals(mockUser.toDTO(), getUser, "should return user");
     }
 
     @Test
@@ -63,24 +63,74 @@ public class UserServiceImplTest {
 
         UserDTO newUser = userService.addUser(credentialUserDTO);
 
-        verify(userRepository, times(1)).findDistinctByUsername(credentialUserDTO.getUsername());
         verify(userRepository, times(1)).save(any(User.class));
-        assertEquals(credentialUserDTO.toDTO(), newUser);
+        assertEquals(credentialUserDTO.toDTO(), newUser, "should add user");
     }
 
     @Test
     public void addUser_TestInvalidScenario() {
-        CredentialUserDTO dtoWithExistingName = new CredentialUserDTO("user", "", "", "");
-        CredentialUserDTO dtoWithExistingEmail = new CredentialUserDTO("", "", "email", "");
+        CredentialUserDTO dtoWithExistingName = new CredentialUserDTO(mockUser.getUsername(), "", "", "");
+        CredentialUserDTO dtoWithExistingEmail = new CredentialUserDTO("", "", mockUser.getEmail(), "");
 
         //i kinda like it
-        assertAll(() -> assertThrows(UserAlreadyExistsException.class, () -> userService.addUser(dtoWithExistingName), "adding user with same username should not be possible"),
-                () -> assertThrows(UserAlreadyExistsException.class, () -> userService.addUser(dtoWithExistingEmail), "adding user with same email should not be possibe"));
+        assertAll(
+                () -> assertThrows(UserAlreadyExistsException.class,
+                        () -> userService.addUser(dtoWithExistingName),
+                        "adding user with same username should throw exception"),
+
+                () -> assertThrows(UserAlreadyExistsException.class,
+                        () -> userService.addUser(dtoWithExistingEmail),
+                        "adding user with same email should throw exception")
+        );
     }
 
     @Test
-    public void changeUserPassword_ChangeToNewPassword_ShouldChangePassword() {
+    public void changeUserPassword_TestValidScenario() {
+        userService.changeUserPassword(mockUser.getUsername(), "newpass");
 
+        verify(userRepository, times(1)).save(mockUser);
+        assertTrue(PasswordEncoder.getEncoder().matches("newpass", mockUser.getPassword()), "should change user password to newpassword");
     }
 
+    @Test
+    public void changeUserPassword_TestInvalidScenario() {
+        assertAll(
+                () -> assertThrows(UserNotFoundException.class,
+                        () -> userService.changeUserPassword("notexisitng", "newpass"),
+                        "should throw exception for not existent user"));
+    }
+
+    @Test
+    public void changeUserImage_TestValidScenario() {
+        userService.changeUserImage(mockUser.getUsername(), "image");
+
+        verify(userRepository, times(1)).save(mockUser);
+        assertEquals("image", mockUser.getImageLink(), "should change user image to provided image");
+    }
+
+    @Test
+    public void changeUserImage_TestInvalidScenarios() {
+        assertAll(
+                () -> assertThrows(UserNotFoundException.class,
+                        () -> userService.changeUserImage("notexistent", ""),
+                        "should throw exception for not existent user")
+        );
+    }
+
+    @Test
+    public void activateUser_TestValidScenario() {
+        userService.activateUser(mockUser.getUsername());
+
+        verify(userRepository, times(1)).save(mockUser);
+        assertTrue(mockUser.getActive(), "should activate user");
+    }
+
+    @Test
+    public void activateUser_TestInvalidScenarios() {
+        assertAll(
+                () -> assertThrows(UserNotFoundException.class,
+                        () -> userService.activateUser("notexistent"),
+                        "should throw exception for not existent user")
+        );
+    }
 }
