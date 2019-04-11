@@ -43,8 +43,15 @@
             </div>
             <div class="row">
                 <div class="col-12 d-flex justify-content-center">
-                    <form th:action="@{/login}" method="post">
-                        <button type="submit" class="btn btn-primary">
+                    <form id="confirmationForm" th:name="confirmationForm" th:action="@{/oauth/authorize}"
+                          method="post">
+                        <input type="hidden" th:value="true" th:name="user_oauth_approval" value="true">
+                        <th:block th:each="scope : ${scopes}">
+                            <input type="hidden" th:name="${scope}" th:value="true"/>
+                        </th:block>
+                        <input type="hidden" th:name="scope.all" th:value="true">
+
+                        <button th:name="authorize" th:value="Authorize" type="submit" class="btn btn-primary">
                             Authorize
                         </button>
                     </form>
