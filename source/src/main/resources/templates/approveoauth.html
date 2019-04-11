@@ -33,8 +33,35 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <h3>Authorize</h3>
+                    <h3 th:text="Authorize + ' ' + ${appToAuth}">Authorize</h3>
                     <hr/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col text-center"
+                     th:text="${appToAuth} + ' wants to connect with your sternum account'"></div>
+            </div>
+            <div class="row">
+                <div class="col-12 d-flex justify-content-center">
+                    <form th:action="@{/login}" method="post">
+                        <button type="submit" class="btn btn-primary">
+                            Authorize
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 text-center">
+                    <br/>
+                    <br/>
+                    Not you?
+                </div>
+                <div class="col-12 d-flex justify-content-center">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-primary">
+                            Use different account
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
