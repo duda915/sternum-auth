@@ -43,6 +43,21 @@ public class UserServiceImplTest {
     }
 
     @Test
+    public void getUserEntity_TestValidScenario() {
+        User getUser = userService.getEntityByUsername(mockUser.getUsername());
+
+        verify(userRepository, times(1)).findDistinctByUsername(mockUser.getUsername());
+        assertEquals(mockUser, getUser, "should return user entity");
+    }
+
+    @Test
+    public void getUserEntity_TestInvalidScenarios() {
+        assertAll(() -> assertThrows(UserNotFoundException.class,
+                () -> userService.getEntityByUsername("notexistent"), "should throw if user not exists")
+        );
+    }
+
+    @Test
     public void getUser_TestValidScenario() {
         UserDTO getUser = userService.getUserByUsername(mockUser.getUsername());
 

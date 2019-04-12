@@ -33,4 +33,8 @@ public class RegistrationToken {
         this.token = UUID.randomUUID().toString();
         this.registrationDate = new Date(new java.util.Date().getTime());
     }
+
+    public RegistrationTokenDTO toDTO() {
+        return new RegistrationTokenDTO(id, user.toDTO(), registrationDate);
+    }
 }

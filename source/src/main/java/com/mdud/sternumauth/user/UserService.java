@@ -3,6 +3,7 @@ package com.mdud.sternumauth.user;
 import java.util.Optional;
 
 public interface UserService {
+    User getEntityByUsername(String username);
     UserDTO getUserByUsername(String username);
     UserDTO addUser(CredentialUserDTO credentialUserDTO);
     UserDTO changeUserPassword(String username, String newPassword);
