@@ -5,5 +5,5 @@ import com.mdud.sternumauth.user.UserDTO;
 
 public interface RegistrationService {
     UserDTO register(CredentialUserDTO credentialUserDTO);
-    UserDTO activateAccount();
+    UserDTO activateAccount(String token);
 }

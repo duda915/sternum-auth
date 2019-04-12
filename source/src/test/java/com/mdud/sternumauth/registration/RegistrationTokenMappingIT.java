@@ -52,6 +52,27 @@ public class RegistrationTokenMappingIT {
     }
 
     @Test
+    public void save_AddTokenToExistingUser_ShouldAddTokenToExistingUser() {
+        User newUser = new User.UserBuilder()
+                .username("test")
+                .password("pass")
+                .email("email")
+                .imageLink("")
+                .addAuthority(AuthorityType.USER)
+                .addAuthority(AuthorityType.MANAGER)
+                .addAuthority(AuthorityType.ADMIN)
+                .createUser();
+
+        long savedId = userRepository.save(newUser).getId();
+
+        RegistrationToken registrationToken = new RegistrationToken(newUser);
+        registrationToken = registrationTokenRepository.save(registrationToken);
+
+        assertEquals("saving token to user should not change user", savedId,
+                registrationToken.getUser().getId().longValue());
+    }
+
+    @Test
     public void delete_SaveTokenAndNewUserThenDeleteToken_ShouldNotDeleteUser() {
         User newUser = new User.UserBuilder()
                 .username("test")
