@@ -13,3 +13,10 @@ CREATE TABLE IF NOT EXISTS service_user_authority (
   user_id INTEGER REFERENCES service_user(id),
   authority VARCHAR(255) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS registration_token (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES service_user(id),
+  token VARCHAR(255) NOT NULL,
+  registration_date DATE NOT NULL
+);
