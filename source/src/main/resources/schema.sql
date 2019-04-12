@@ -17,6 +17,6 @@ CREATE TABLE IF NOT EXISTS service_user_authority (
 CREATE TABLE IF NOT EXISTS registration_token (
   id SERIAL PRIMARY KEY,
   user_id INTEGER REFERENCES service_user(id),
-  token VARCHAR(255) NOT NULL,
+  token VARCHAR(255) NOT NULL UNIQUE,
   registration_date DATE NOT NULL
 );
