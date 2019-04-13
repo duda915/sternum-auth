@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class UserServiceImplTest {
+
     @InjectMocks
     private UserServiceImpl userService;
 
@@ -158,4 +159,18 @@ public class UserServiceImplTest {
                         "should throw exception for not existent user")
         );
     }
+
+    @Test
+    public void removeUser_TestValidScenario() {
+        assertDoesNotThrow(() -> userService.removeUser(mockUser.getUsername()), "should remove user");
+    }
+
+    @Test
+    public void removeUser_TestInvalidScenario() {
+        assertAll(
+                () -> assertThrows(UserNotFoundException.class,
+                        () -> userService.removeUser("notexistent"),
+                        "removing not existent user should throw exception"));
+    }
+
 }

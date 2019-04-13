@@ -1,6 +1,8 @@
 package com.mdud.sternumauth.registration;
 
+import com.mdud.sternumauth.registration.mail.MailService;
 import com.mdud.sternumauth.user.*;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -10,6 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,6 +31,9 @@ public class RegistrationServiceImplTest {
 
     @Mock
     private UserService userService;
+
+    @Mock
+    private MailService mailService;
 
     private User testuser;
     private CredentialUserDTO credentialTestUser;
@@ -47,13 +54,62 @@ public class RegistrationServiceImplTest {
     }
 
     @Test
-    public void register_TestValidScenario() {
+    public void register_RegisterWithNewUser_ShouldRegisterUser() {
         RegistrationTokenDTO registrationTokenDTO = registrationService.register(credentialTestUser);
 
+        when(userService.checkIfUserExists(testuser.getUsername())).thenReturn(false);
+
+        verify(registrationTokenRepository, never()).delete(any());
+        verify(userService, never()).removeUser(credentialTestUser.getUsername());
+
         verify(userService, times(1)).addUser(credentialTestUser);
-        verify(registrationTokenRepository).save(any(RegistrationToken.class));
+        verify(registrationTokenRepository, times(1)).save(any(RegistrationToken.class));
+        verify(mailService, times(1)).sendMail(eq("email"), any(RegistrationToken.class));
 
         assertEquals(credentialTestUser.toDTO(), registrationTokenDTO.getUserDTO(), "registered user should match parameter user");
+    }
+
+    @Test
+    public void register_RegisterWithExistingUserAndExpiredToken_ShouldRegisterUser() {
+        RegistrationToken registrationToken = new RegistrationToken(testuser);
+        LocalDate date = registrationToken.getRegistrationDate().toLocalDate().minusDays(1);
+        registrationToken.setRegistrationDate(new Date(date.toEpochDay()));
+
+        when(userService.checkIfUserExists(testuser.getUsername())).thenReturn(true);
+
+        when(registrationTokenRepository.findDistinctByUser(testuser)).thenReturn(Optional.of(registrationToken));
+
+        assertDoesNotThrow(() -> registrationService.register(credentialTestUser));
+
+        verify(userService, times(1)).removeUser(credentialTestUser.getUsername());
+        verify(registrationTokenRepository, times(1)).delete(registrationToken);
+        verify(userService, times(1)).addUser(credentialTestUser);
+        verify(registrationTokenRepository, times(1)).save(any(RegistrationToken.class));
+        verify(mailService, times(1)).sendMail(eq("email"), any(RegistrationToken.class));
+    }
+
+    @Test
+    public void register_RegisterWithExistingUserAndNotExpiredToken_ShouldNotRemoveUser() {
+        RegistrationToken registrationToken = new RegistrationToken(testuser);
+
+        when(userService.checkIfUserExists(testuser.getUsername())).thenReturn(true);
+        when(registrationTokenRepository.findDistinctByUser(testuser)).thenReturn(Optional.of(registrationToken));
+
+        assertDoesNotThrow(() -> registrationService.register(credentialTestUser));
+
+        verify(userService, never()).removeUser(credentialTestUser.getUsername());
+        verify(registrationTokenRepository, never()).delete(registrationToken);
+        verify(userService, times(1)).addUser(credentialTestUser);
+    }
+
+    @Test
+    public void register_RegisterWithExistingUserAndNotExistentToken_ShouldNotRemoveUser() {
+        when(userService.checkIfUserExists(testuser.getUsername())).thenReturn(true);
+
+        assertDoesNotThrow(() -> registrationService.register(credentialTestUser));
+        verify(userService, never()).removeUser(credentialTestUser.getUsername());
+        verify(registrationTokenRepository, never()).delete(any());
+        verify(userService, times(1)).addUser(credentialTestUser);
     }
 
     @Test

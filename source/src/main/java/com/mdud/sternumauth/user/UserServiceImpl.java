@@ -71,4 +71,10 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user).toDTO();
     }
 
+    @Override
+    public void removeUser(String username) {
+        User user = getEntityByUsername(username);
+        userRepository.delete(user);
+    }
+
 }

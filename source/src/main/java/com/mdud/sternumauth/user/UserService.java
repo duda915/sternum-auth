@@ -10,4 +10,5 @@ public interface UserService {
     UserDTO changeUserPassword(String username, String newPassword);
     UserDTO changeUserImage(String username, String image);
     UserDTO activateUser(String username);
+    void removeUser(String username);
 }
