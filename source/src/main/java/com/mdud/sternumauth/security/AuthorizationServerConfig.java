@@ -10,13 +10,13 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableAuthorizationServer
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
-    @Value("${spring.sternum.client.id}")
+    @Value("${spring.sternum.auth.client.id}")
     private String clientId;
 
-    @Value("${spring.sternum.client.secret}")
+    @Value("${spring.sternum.auth.client.secret}")
     private String clientSecret;
 
-    @Value("${spring.sternum.redirectUri}")
+    @Value("${spring.sternum.auth.redirectUri}")
     private String redirectUri;
 
     @Override

@@ -25,7 +25,7 @@ public class MailServiceImpl implements MailService {
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(mail);
         simpleMailMessage.setSubject("Sternum account activation");
-        simpleMailMessage.setText("To activate account follow the link: " + authAddress + "activate?token=" + registrationToken.getToken());
+        simpleMailMessage.setText("To activate account follow the link: " + authAddress + "/activate?token=" + registrationToken.getToken());
 
         javaMailSender.send(simpleMailMessage);
     }
