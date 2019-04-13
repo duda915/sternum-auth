@@ -14,6 +14,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean checkIfUserExists(String username) {
+        return userRepository.findDistinctByUsername(username).isPresent();
+    }
+
+    @Override
     public User getEntityByUsername(String username) {
         return userRepository.findDistinctByUsername(username).orElseThrow(UserNotFoundException::new);
     }

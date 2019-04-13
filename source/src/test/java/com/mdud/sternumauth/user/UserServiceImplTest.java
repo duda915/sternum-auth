@@ -43,6 +43,16 @@ public class UserServiceImplTest {
     }
 
     @Test
+    public void checkIfUserExists_UserExists_ShouldReturnTrue() {
+        assertTrue(userService.checkIfUserExists(mockUser.getUsername()));
+    }
+
+    @Test
+    public void checkIfUserExists_UserNotExists_ShouldReturnFalse() {
+        assertFalse(userService.checkIfUserExists("not existent"));
+    }
+
+    @Test
     public void getUserEntity_TestValidScenario() {
         User getUser = userService.getEntityByUsername(mockUser.getUsername());
 
