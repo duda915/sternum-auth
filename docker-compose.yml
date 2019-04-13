@@ -26,7 +26,14 @@ services:
       - POSTGRES_DB=auth
     volumes:
       - dbdata:/var/lib/postgresql/data
-
+  smtpdevservice:
+    container_name: smtp
+    image: catatnight/postfix
+    ports:
+      - "3001:25"
+    environment:
+      - maildomain=localhost
+      - smtp_user=test:test
 volumes:
   cdndata:
   dbdata:
