@@ -1,20 +1,22 @@
 package com.mdud.sternumauth.cdn;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 @Service
 public class CDNServiceImpl implements CDNService {
@@ -26,12 +28,19 @@ public class CDNServiceImpl implements CDNService {
         this.restTemplate = restTemplate;
     }
 
-    private void throwIfFileIsNotImage(byte[] image) {
+    private byte[] convertToPNG(byte[] image) {
         ByteArrayInputStream stream = new ByteArrayInputStream(image);
 
         try {
-            if(ImageIO.read(stream) == null) {
+            BufferedImage bufferedImage = ImageIO.read(stream);
+
+            if(bufferedImage == null) {
                 throw new IOException();
+            } else {
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                ImageIO.write(bufferedImage, "png", byteArrayOutputStream);
+
+                return byteArrayOutputStream.toByteArray();
             }
         } catch (IOException e) {
             throw new ImageException();
@@ -39,20 +48,30 @@ public class CDNServiceImpl implements CDNService {
     }
 
     @Override
-    public String addImage(byte[] image) {
-        throwIfFileIsNotImage(image);
+    public CDNEntity addImage(byte[] image) {
+        byte[] pngImage = convertToPNG(image);
 
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.setContentDispositionFormData("resource", "test.png");
+        httpHeaders.setContentType(MediaType.MULTIPART_FORM_DATA);
+
         MultiValueMap<String, Object> params = new LinkedMultiValueMap<>();
 
-        params.add("resource", image);
+        String filePath = "/tmp/" + UUID.randomUUID().toString() + ".png";
+
+        try {
+            FileUtils.writeByteArrayToFile(new File(filePath), pngImage);
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("unknown image writing error");
+        }
+
+        FileSystemResource fileSystemResource = new FileSystemResource(filePath);
+        params.add("resource", fileSystemResource);
 
         HttpEntity<MultiValueMap<String, Object>> request = new HttpEntity<>(params, httpHeaders);
 
-        ResponseEntity<String> response = restTemplate.exchange("/add", HttpMethod.POST, request, String.class);
+        ResponseEntity<CDNEntity> response = restTemplate.exchange("/add", HttpMethod.POST, request, CDNEntity.class);
 
-        System.out.println(response.getBody());
-        return null;
+        return response.getBody();
     }
 }

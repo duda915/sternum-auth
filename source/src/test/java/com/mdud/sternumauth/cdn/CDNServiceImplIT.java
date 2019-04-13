@@ -12,6 +12,7 @@ import org.springframework.core.io.Resource;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
@@ -34,6 +35,6 @@ public class CDNServiceImplIT {
     @Test
     public void addImage_AddImage_ShouldAddImage() throws IOException {
         byte[] images = IOUtils.toByteArray(image.getInputStream());
-        cdnService.addImage(images);
+        assertDoesNotThrow(() -> cdnService.addImage(images), "adding image to cdn should not throw exception");
     }
 }
