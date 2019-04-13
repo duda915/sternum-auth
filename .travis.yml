@@ -15,4 +15,4 @@ before_install:
 before_script:
   - cd source
 
-script: ./mvnw test
+script: ./mvnw verify
