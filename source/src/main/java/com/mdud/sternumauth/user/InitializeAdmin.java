@@ -21,7 +21,7 @@ public class InitializeAdmin implements CommandLineRunner {
                     .username("admin")
                     .password("admin")
                     .email("admin")
-                    .imageLink("")
+                    .imageLink(null)
                     .setActive(true)
                     .addAuthority(AuthorityType.USER)
                     .addAuthority(AuthorityType.MANAGER)
