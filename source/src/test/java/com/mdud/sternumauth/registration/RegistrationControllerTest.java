@@ -65,8 +65,21 @@ public class RegistrationControllerTest {
     }
 
     @Test
+    public void register_TestConfirmPassword_ShouldHaveError() throws Exception {
+        RegistrationForm registrationForm = new RegistrationForm("test", "test123", "testss123", "test@email.com", null);
+
+        mockMvc.perform(multipart("/register")
+                .flashAttr("form", registrationForm))
+                .andExpect(status().isOk())
+                .andExpect(view().name("registerView"))
+                .andExpect(model().attribute("error", CoreMatchers.notNullValue()));
+    }
+
+    @Test
     public void register_WithoutImage_ShouldRegister() throws Exception {
-        RegistrationForm registrationForm = new RegistrationForm("test", "test123", "test@email.com");
+        byte[] empty = null;
+        RegistrationForm registrationForm = new RegistrationForm("test", "test123", "test123", "test@email.com",
+                new MockMultipartFile("form", empty));
 
         mockMvc.perform(multipart("/register")
         .flashAttr("form", registrationForm))
@@ -82,16 +95,15 @@ public class RegistrationControllerTest {
 
     @Test
     public void register_WithImage_ShouldRegister() throws Exception {
-        RegistrationForm registrationForm = new RegistrationForm("test", "test123", "test@email.com");
-
         MockMultipartFile image = new MockMultipartFile("file", resourceImage.getInputStream());
+        RegistrationForm registrationForm = new RegistrationForm("test", "test123", "test123", "test@email.com", image);
+
         CDNEntity imagePath = new CDNEntity();
         imagePath.setResourceURL("/test");
 
         when(cdnService.addImage(any())).thenReturn(imagePath);
 
         mockMvc.perform(multipart("/register")
-                .file(image)
                 .flashAttr("form", registrationForm))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(model().attribute("error", CoreMatchers.nullValue()))

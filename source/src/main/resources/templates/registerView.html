@@ -16,5 +16,83 @@
 </head>
 <body>
 <div class="container">
-    Registration
+    <div class="row">
+        <div class="col-12" style="height: 25px"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 logo" style="height: 150px"></div>
+    </div>
+
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <div class="container">
+                <div class="row">
+                    <div class="col logo">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <h3>Register</h3>
+                        <hr/>
+                    </div>
+                </div>
+                <div th:if="${error != null}" class="row">
+                    <div class="col">
+                        <span th:text="${error}"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <form th:action="@{/register}" th:method="POST" th:object="${form}" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="usernameInput">Username</label>
+                                <input type="text" class="form-control"
+                                       id="usernameInput"
+                                       th:name="username"
+                                       placeholder="Username"/>
+                            </div>
+                            <div class="form-group">
+                                <label for="emailInput">Email</label>
+                                <input type="email" class="form-control"
+                                       id="emailInput"
+                                       th:name="email"
+                                       placeholder="Email"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="passwordInput">Password</label>
+                                <input type="password" class="form-control"
+                                       id="passwordInput"
+                                       th:name="plainPassword"
+                                       placeholder="Password"/>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="fileInput">File</label>
+                                <input type="file" class="form-control-file"
+                                       id="fileInput"
+                                       th:name="image">
+                            </div>
+
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary">
+                                    Register
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="row" style="margin-top: 25px">
+                    <div class="col d-flex justify-content-center">
+                        <a href="/login">
+                            <button type="button" class="btn btn-info">Login</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-3"></div>
+    </div>
 </div>
