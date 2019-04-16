@@ -1,15 +1,19 @@
 package com.mdud.sternumauth.user;
 
+import com.mdud.sternumauth.cdn.CDNEntity;
+import com.mdud.sternumauth.cdn.CDNService;
+import com.mdud.sternumauth.user.form.ChangeImageForm;
 import com.mdud.sternumauth.user.form.ChangePasswordForm;
 import org.hamcrest.CoreMatchers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -21,9 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
-@ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT)
+@RunWith(SpringJUnit4ClassRunner.class)
 public class UserControllerTest {
 
     @InjectMocks
@@ -32,11 +34,17 @@ public class UserControllerTest {
     @Mock
     private UserService userService;
 
+    @Mock
+    private CDNService cdnService;
+
     private User mockUser;
 
     private MockMvc mockMvc;
 
-    @BeforeEach
+    @Value("classpath:static/images/sternum-logo.png")
+    private Resource resourceImage;
+
+    @Before
     public void setup() {
         this.mockUser = new User.UserBuilder()
                 .username("user")
@@ -117,6 +125,36 @@ public class UserControllerTest {
         verify(userService, never()).changeUserPassword(mockUser.getUsername(), changePasswordForm.getPassword());
     }
 
+    @Test
+    public void changeUserImage_ChangeImage_ShouldChangeImage() throws Exception {
+        when(cdnService.addImage(any())).thenReturn(new CDNEntity());
+
+        Principal principal = () -> mockUser.getUsername();
+        ChangeImageForm changeImageForm = new ChangeImageForm(new MockMultipartFile("image", resourceImage.getInputStream()));
+
+        mockMvc.perform(post("/image")
+                .flashAttr("imageForm", changeImageForm)
+                .principal(principal))
+                .andExpect(status().is3xxRedirection());
 
 
+        verify(cdnService, times(1)).addImage(any());
+        verify(userService, times(1)).changeUserImage(eq(principal.getName()), any());
+    }
+
+    @Test
+    public void changeUserImage_DeleteImage_ShouldChangeToNull() throws Exception {
+        byte[] empty = null;
+        Principal principal = () -> mockUser.getUsername();
+        ChangeImageForm changeImageForm = new ChangeImageForm(new MockMultipartFile("image", empty));
+
+        mockMvc.perform(post("/image")
+                .flashAttr("imageForm", changeImageForm)
+                .principal(principal))
+                .andExpect(status().is3xxRedirection());
+
+
+        verify(cdnService, never()).addImage(any());
+        verify(userService, times(1)).changeUserImage(principal.getName(), null);
+    }
 }
