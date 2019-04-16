@@ -1,12 +1,14 @@
 package com.mdud.sternumauth.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.security.Principal;
 
-@RestController
+@Controller
 public class UserController {
 
     private final UserService userService;
@@ -17,7 +19,18 @@ public class UserController {
     }
 
     @GetMapping("/me")
-    public UserDTO getLoggedUser(Principal principal) {
+    public @ResponseBody
+    UserDTO getLoggedUser(Principal principal) {
         return userService.getUserByUsername(principal.getName());
     }
+
+    @GetMapping("/")
+    public String userInfo(Principal principal, Model model) {
+        UserDTO user = userService.getUserByUsername(principal.getName());
+
+        model.addAttribute("user", user);
+        return "index";
+    }
+
+
 }

@@ -1,5 +1,6 @@
 package com.mdud.sternumauth.user;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,8 +15,7 @@ import java.security.Principal;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -57,4 +57,17 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value(mockUser.getUsername()));
     }
+
+
+    @Test
+    public void userInfo() throws Exception {
+        Principal principal = () -> mockUser.getUsername();
+
+        mockMvc.perform(get("/")
+                .principal(principal))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("user", CoreMatchers.notNullValue()));
+    }
+
 }
