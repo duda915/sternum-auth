@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.security.Principal;
@@ -38,19 +39,20 @@ public class UserController {
 
     @PostMapping("/password")
     public String changePassword(@ModelAttribute("passwordForm") @Valid ChangePasswordForm changePasswordForm, BindingResult bindingResult,
-                                 Principal principal, Model model) {
+                                 Principal principal, RedirectAttributes redirectAttributes) {
 
         if (bindingResult.hasErrors()) {
-            model.addAttribute("error", ValidationUtils.combineBindingErrors(bindingResult));
-            return "index";
+            redirectAttributes.addFlashAttribute("error", ValidationUtils.combineBindingErrors(bindingResult));
+            return "redirect:/";
         } else if (!changePasswordForm.getPassword().equals(changePasswordForm.getConfirmPassword())) {
-            model.addAttribute("error", "passwords must be the same");
-            return "index";
+            redirectAttributes.addFlashAttribute("error", "password must not be the same");
+            return "redirect:/";
         }
 
         userService.changeUserPassword(principal.getName(), changePasswordForm.getPassword());
-        model.addAttribute("info", "password changed");
-        return "index";
+        redirectAttributes.addFlashAttribute("info", "password changed");
+
+        return "redirect:/";
     }
 
 

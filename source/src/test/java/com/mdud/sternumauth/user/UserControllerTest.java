@@ -83,9 +83,8 @@ public class UserControllerTest {
         mockMvc.perform(post("/password")
                 .flashAttr("passwordForm", changePasswordForm)
                 .principal(principal))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"))
-                .andExpect(model().attribute("info", CoreMatchers.notNullValue()));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(flash().attribute("info", CoreMatchers.notNullValue()));
 
         verify(userService, times(1)).changeUserPassword(mockUser.getUsername(), changePasswordForm.getPassword());
     }
@@ -98,9 +97,8 @@ public class UserControllerTest {
         mockMvc.perform(post("/password")
                 .flashAttr("passwordForm", changePasswordForm)
                 .principal(principal))
-                .andExpect(model().attribute("error", CoreMatchers.notNullValue()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"));
+                .andExpect(flash().attribute("error", CoreMatchers.notNullValue()))
+                .andExpect(status().is3xxRedirection());
 
         verify(userService, never()).changeUserPassword(mockUser.getUsername(), changePasswordForm.getPassword());
     }
@@ -113,10 +111,8 @@ public class UserControllerTest {
         mockMvc.perform(post("/password")
                 .flashAttr("passwordForm", changePasswordForm)
                 .principal(principal))
-                .andExpect(model().hasErrors())
-                .andExpect(model().attribute("error", CoreMatchers.notNullValue()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("index"));
+                .andExpect(flash().attribute("error", CoreMatchers.notNullValue()))
+                .andExpect(status().is3xxRedirection());
 
         verify(userService, never()).changeUserPassword(mockUser.getUsername(), changePasswordForm.getPassword());
     }
