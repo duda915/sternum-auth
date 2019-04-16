@@ -17,6 +17,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.IOException;
+
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -113,5 +115,13 @@ public class RegistrationControllerTest {
 
         verify(registrationService, times(1)).register(expectedRegisteredUser);
         verify(cdnService, times(1)).addImage(image.getBytes());
+    }
+
+    @Test
+    public void activateAccount() throws Exception {
+        mockMvc.perform(get("/activate")
+        .param("token", "test"))
+                .andExpect(status().isOk())
+                .andExpect(model().attribute("info", CoreMatchers.notNullValue()));
     }
 }

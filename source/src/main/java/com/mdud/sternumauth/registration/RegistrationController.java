@@ -1,26 +1,27 @@
 package com.mdud.sternumauth.registration;
 
 import com.mdud.sternumauth.cdn.CDNService;
-import com.mdud.sternumauth.cdn.ImageException;
 import com.mdud.sternumauth.user.CredentialUserDTO;
-import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.awt.*;
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Controller
 @Log
 public class RegistrationController {
+
 
     private final CDNService cdnService;
     private final RegistrationService registrationService;
@@ -71,5 +72,12 @@ public class RegistrationController {
 
         registrationService.register(newUser);
         return "redirect:login";
+    }
+
+    @GetMapping("/activate")
+    public String activateAccount(@RequestParam("token") String token, Model model) {
+        registrationService.activateAccount(token);
+        model.addAttribute("info", "Account activated");
+        return "login";
     }
 }
