@@ -1,10 +1,11 @@
 package com.mdud.sternumauth.registration;
 
 import com.mdud.sternumauth.cdn.CDNService;
-import com.mdud.sternumauth.user.CredentialUserDTO;
+import com.mdud.sternumauth.registration.exception.RegistrationException;
+import com.mdud.sternumauth.registration.form.RegistrationForm;
+import com.mdud.sternumauth.user.dto.CredentialUserDTO;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

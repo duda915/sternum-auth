@@ -1,5 +1,6 @@
 package com.mdud.sternumauth.cdn;
 
+import com.mdud.sternumauth.cdn.exception.ImageException;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

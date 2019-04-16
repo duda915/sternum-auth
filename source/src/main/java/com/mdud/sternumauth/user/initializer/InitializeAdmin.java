@@ -1,5 +1,8 @@
-package com.mdud.sternumauth.user;
+package com.mdud.sternumauth.user.initializer;
 
+import com.mdud.sternumauth.user.AuthorityType;
+import com.mdud.sternumauth.user.User;
+import com.mdud.sternumauth.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;

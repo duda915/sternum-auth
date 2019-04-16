@@ -1,9 +1,11 @@
 package com.mdud.sternumauth.registration;
 
+import com.mdud.sternumauth.registration.dto.RegistrationTokenDTO;
+import com.mdud.sternumauth.registration.exception.TokenNotFoundException;
 import com.mdud.sternumauth.registration.mail.MailService;
-import com.mdud.sternumauth.user.CredentialUserDTO;
+import com.mdud.sternumauth.user.dto.CredentialUserDTO;
 import com.mdud.sternumauth.user.User;
-import com.mdud.sternumauth.user.UserDTO;
+import com.mdud.sternumauth.user.dto.UserDTO;
 import com.mdud.sternumauth.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

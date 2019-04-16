@@ -1,5 +1,6 @@
 package com.mdud.sternumauth.user;
 
+import com.mdud.sternumauth.user.form.ChangePasswordForm;
 import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,18 +8,22 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.security.Principal;
 
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 public class UserControllerTest {
 
     @InjectMocks
@@ -69,5 +74,53 @@ public class UserControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("user", CoreMatchers.notNullValue()));
     }
+
+    @Test
+    public void changePassword_TestValidScenario_ShouldChangePassword() throws Exception {
+        Principal principal = () -> mockUser.getUsername();
+        ChangePasswordForm changePasswordForm = new ChangePasswordForm("newpassx", "newpassx");
+
+        mockMvc.perform(post("/password")
+                .flashAttr("passwordForm", changePasswordForm)
+                .principal(principal))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"))
+                .andExpect(model().attribute("info", CoreMatchers.notNullValue()));
+
+        verify(userService, times(1)).changeUserPassword(mockUser.getUsername(), changePasswordForm.getPassword());
+    }
+
+    @Test
+    public void changePassword_ConfirmPasswordNotMatch_ShouldNotChangePassword() throws Exception {
+        Principal principal = () -> mockUser.getUsername();
+        ChangePasswordForm changePasswordForm = new ChangePasswordForm("newpassx", "newpassxss");
+
+        mockMvc.perform(post("/password")
+                .flashAttr("passwordForm", changePasswordForm)
+                .principal(principal))
+                .andExpect(model().attribute("error", CoreMatchers.notNullValue()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
+
+        verify(userService, never()).changeUserPassword(mockUser.getUsername(), changePasswordForm.getPassword());
+    }
+
+    @Test
+    public void changePassword_PasswordNotMatchSixCharactersConstraint_ShouldNotChangePassword() throws Exception {
+        Principal principal = () -> mockUser.getUsername();
+        ChangePasswordForm changePasswordForm = new ChangePasswordForm("asd", "asd");
+
+        mockMvc.perform(post("/password")
+                .flashAttr("passwordForm", changePasswordForm)
+                .principal(principal))
+                .andExpect(model().hasErrors())
+                .andExpect(model().attribute("error", CoreMatchers.notNullValue()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("index"));
+
+        verify(userService, never()).changeUserPassword(mockUser.getUsername(), changePasswordForm.getPassword());
+    }
+
+
 
 }

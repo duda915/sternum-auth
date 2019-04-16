@@ -1,6 +1,7 @@
-package com.mdud.sternumauth.user;
+package com.mdud.sternumauth.user.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.mdud.sternumauth.user.AuthorityType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

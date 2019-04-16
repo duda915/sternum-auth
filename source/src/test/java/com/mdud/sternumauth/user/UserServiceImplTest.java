@@ -1,6 +1,10 @@
 package com.mdud.sternumauth.user;
 
 
+import com.mdud.sternumauth.user.dto.CredentialUserDTO;
+import com.mdud.sternumauth.user.dto.UserDTO;
+import com.mdud.sternumauth.user.exception.UserAlreadyExistsException;
+import com.mdud.sternumauth.user.exception.UserNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

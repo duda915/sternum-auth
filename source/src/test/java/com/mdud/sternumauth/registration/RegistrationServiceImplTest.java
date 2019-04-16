@@ -1,8 +1,11 @@
 package com.mdud.sternumauth.registration;
 
+import com.mdud.sternumauth.registration.dto.RegistrationTokenDTO;
+import com.mdud.sternumauth.registration.exception.TokenNotFoundException;
 import com.mdud.sternumauth.registration.mail.MailService;
 import com.mdud.sternumauth.user.*;
-import org.hamcrest.CoreMatchers;
+import com.mdud.sternumauth.user.dto.CredentialUserDTO;
+import com.mdud.sternumauth.user.dto.UserDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

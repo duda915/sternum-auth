@@ -1,4 +1,4 @@
-package com.mdud.sternumauth.registration;
+package com.mdud.sternumauth.registration.form;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

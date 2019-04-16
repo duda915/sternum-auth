@@ -1,5 +1,9 @@
 package com.mdud.sternumauth.user;
 
+import com.mdud.sternumauth.user.dto.CredentialUserDTO;
+import com.mdud.sternumauth.user.dto.UserDTO;
+import com.mdud.sternumauth.user.exception.UserAlreadyExistsException;
+import com.mdud.sternumauth.user.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

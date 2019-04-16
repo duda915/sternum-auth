@@ -1,10 +1,10 @@
 package com.mdud.sternumauth.user;
 
+import com.mdud.sternumauth.user.dto.CredentialUserDTO;
+import com.mdud.sternumauth.user.dto.UserDTO;
 import lombok.*;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;

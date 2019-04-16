@@ -1,7 +1,6 @@
 package com.mdud.sternumauth.security;
 
 import com.mdud.sternumauth.user.User;
-import com.mdud.sternumauth.user.UserNotFoundException;
 import com.mdud.sternumauth.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;

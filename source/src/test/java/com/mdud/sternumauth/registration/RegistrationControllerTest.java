@@ -2,7 +2,8 @@ package com.mdud.sternumauth.registration;
 
 import com.mdud.sternumauth.cdn.CDNEntity;
 import com.mdud.sternumauth.cdn.CDNService;
-import com.mdud.sternumauth.user.CredentialUserDTO;
+import com.mdud.sternumauth.registration.form.RegistrationForm;
+import com.mdud.sternumauth.user.dto.CredentialUserDTO;
 import org.hamcrest.CoreMatchers;
 
 import org.junit.Before;
@@ -16,8 +17,6 @@ import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import java.io.IOException;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

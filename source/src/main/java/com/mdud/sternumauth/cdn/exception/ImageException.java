@@ -1,4 +1,4 @@
-package com.mdud.sternumauth.cdn;
+package com.mdud.sternumauth.cdn.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

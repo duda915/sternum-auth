@@ -1,5 +1,6 @@
 package com.mdud.sternumauth.registration;
 
+import com.mdud.sternumauth.registration.dto.RegistrationTokenDTO;
 import com.mdud.sternumauth.user.User;
 import lombok.Data;
 import lombok.NoArgsConstructor;

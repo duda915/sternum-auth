@@ -1,6 +1,6 @@
-package com.mdud.sternumauth.registration;
+package com.mdud.sternumauth.registration.dto;
 
-import com.mdud.sternumauth.user.UserDTO;
+import com.mdud.sternumauth.user.dto.UserDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 

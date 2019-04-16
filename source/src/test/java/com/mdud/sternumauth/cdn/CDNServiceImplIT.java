@@ -1,5 +1,6 @@
 package com.mdud.sternumauth.cdn;
 
+import com.mdud.sternumauth.cdn.exception.ImageException;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

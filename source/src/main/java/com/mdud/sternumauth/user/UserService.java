@@ -1,6 +1,7 @@
 package com.mdud.sternumauth.user;
 
-import java.util.Optional;
+import com.mdud.sternumauth.user.dto.CredentialUserDTO;
+import com.mdud.sternumauth.user.dto.UserDTO;
 
 public interface UserService {
     boolean checkIfUserExists(String username);
